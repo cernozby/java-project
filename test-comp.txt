@@ -1,0 +1,3 @@
+id:{1};date:{22.3.2022};address:{Praha3};description{Nejlepsi zavody};boulderCount{5}
+id:{2};date:{11.11.2030};address:{Mars3};description{Muskovy vesmirne zavody};boulderCount{7}
+id:{3};date:{11.11.2023};address:{Pepikova 3};description{Prazske zavody};boulderCount{3}
