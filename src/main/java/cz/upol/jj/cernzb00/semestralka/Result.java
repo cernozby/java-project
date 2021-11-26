@@ -30,12 +30,12 @@ public class Result extends BaseEntity implements entityInterface, Comparable<Re
     public String getToStr() {
          StringBuilder myResult = new StringBuilder();
          myResult.append(this.getRacer().getToStr());
-         myResult.append(" Výsledky: " );
+         myResult.append(" Results: " );
         int iter = 1;
         for (Type t: this.getResult()) {
             myResult.append(" B").append(iter++).append(": ").append(t.toString());
         }
-        return myResult.toString();
+        return myResult + "\n";
     }
 
 

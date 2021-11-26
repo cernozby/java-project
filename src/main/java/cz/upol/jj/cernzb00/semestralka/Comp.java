@@ -26,10 +26,10 @@ public class Comp extends BaseEntity implements entityInterface {
     }
 
     public String getToStr() {
-        return "datum zavodu: " + this.date +
-                "\nadresa zavodu: " + this.address +
-                "\npopis: " + this.description +
-                "\npocet bouldru: " + this.boulderCount +
+        return "Comp date: " + this.date +
+                "\naddress: " + this.address +
+                "\ndescription: " + this.description +
+                "\nboulder count: " + this.boulderCount +
                 "\n\n";
     }
 

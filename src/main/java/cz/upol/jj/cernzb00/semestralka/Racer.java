@@ -21,7 +21,7 @@ public class Racer extends BaseEntity implements entityInterface {
     }
 
     public String getToStr() {
-        return "Jméno: " + this.firstname + " " + this.lastname + " Rok narozeni: " + this.born;
+        return "full name: " + this.firstname + " " + this.lastname + " born: " + this.born;
     }
 
     @Override

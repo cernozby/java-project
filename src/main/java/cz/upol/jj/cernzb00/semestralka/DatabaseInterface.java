@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public interface DatabaseInterface <T> {
-    public T getFromDb(String DbLine);
-    public boolean delete(int id);
-    public Optional<T> getById(int idRacer);
-    public ArrayList<T> readDbData();
+    T getFromDb(String DbLine);
+    boolean delete(int id);
+    ArrayList<T> readDbData();
 }
 

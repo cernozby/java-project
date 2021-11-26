@@ -70,7 +70,7 @@ public class Client {
     private String validName() {
         String name = this.readString();
         if (!this.isValidName(name)) {
-            throw new InputMismatchException("Nevalidní input: " + name);
+            throw new InputMismatchException("Invalid input: " + name);
         }
         return name;
     }
@@ -78,7 +78,7 @@ public class Client {
     private int validBorn() {
         int born = this.readInt();
         if (!this.isValidBorn(born)) {
-            throw new InputMismatchException("Nevalidní rok narozeni: " + born);
+            throw new InputMismatchException("Invalid born: " + born);
         }
         return born;
     }
@@ -86,7 +86,7 @@ public class Client {
     private int validId() {
         int id = this.readInt();
         if (!this.isValidId(id)) {
-            throw new InputMismatchException("Nevalidní id:");
+            throw new InputMismatchException("Invalid id:");
         }
         return id;
     }
@@ -99,12 +99,12 @@ public class Client {
     private Integer readInt() {
         boolean isNum = false;
         int i = 0;
-        while(isNum == false) {
+        while(!isNum) {
             try {
                 i = new Scanner(System.in).nextInt();
                 isNum = true;
             } catch (InputMismatchException e) {
-                System.out.print("Neciselna hodnota, opakujte zadani: ");
+                System.out.print("Please insert integer: ");
             }
         }
 
@@ -144,20 +144,23 @@ public class Client {
         String firstname = this.readStringInput("Racer firstname");
         String lastname = this.readStringInput("Racer lastname");
         int born = this.readBornInput("Born");
+        System.out.println();
         this.racerDatabase.addRacer(firstname, lastname, born);
     }
 
     private void deleteRacer() {
         try {
             this.getDatabaseRacer().delete(this.readIdInput("Racer id"));
-            System.out.println("Uživatel byl uspesne odstranen");
+            System.out.println("User was deleted successfully!");
+            System.out.println();
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
 
     private void printAllRacers() {
-        this.racerDatabase.printAllRacers();
+        this.racerDatabase.printAllDb();
+        System.out.println();
     }
 
     private void addComp() {
@@ -169,12 +172,14 @@ public class Client {
         String description = this.readString();
         int boulderCount = this.readIdInput("comp boulder count: ");
         this.compDatabase.addComp(date, address, description, boulderCount);
+        System.out.println();
     }
 
     private void deleteComp() {
         try {
             if (this.getDatabaseComp().delete(this.readIdInput("comp id"))) {
-                System.out.println("Zavod byl byl uspesne odstranen");
+                System.out.println("Comp was deleted successfully");
+                System.out.println();
             }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -182,7 +187,8 @@ public class Client {
     }
 
     private void printAllComp() {
-        this.getDatabaseComp().printAllComps();
+        this.getDatabaseComp().printAllDb();
+        System.out.println();
     }
 
     private void addResult() {
@@ -190,7 +196,7 @@ public class Client {
         Optional<Comp> compOpt = this.compDatabase.getById(this.readIdInput("comp id"));
 
         if (compOpt.isEmpty() || racerOpt.isEmpty()) {
-            System.out.println("Neplátné id závodu.");
+            System.out.println("Invalid comp id.");
         }
 
         int boulderCount = compOpt.get().getBoulderCount();
@@ -203,8 +209,9 @@ public class Client {
                 result.add(Type.valueOf(this.readString()));
             } catch (IllegalArgumentException e) {
                 i--;
-                System.out.println("Neplátná volba.");
+                System.out.println("Invalid choose: ");
             }
+            System.out.println();
 
         }
         this.resultDatabase.addResult(compOpt.get(), racerOpt.get(), result);
@@ -213,7 +220,7 @@ public class Client {
     private void deleteResult() {
         try {
             if (this.getDatabaseResult().delete(this.readIdInput("result id"))) {
-                System.out.println("Vysledek byl uspesne odstranen");
+                System.out.println("Result was removed!");
             }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -238,7 +245,7 @@ public class Client {
         if (myint == 1) {
             this.connectToDb();
         } else {
-            System.out.println("Nevalidní akce");
+            System.out.println("Invalid action");
         }
         return myint;
 
@@ -249,7 +256,7 @@ public class Client {
         int myint = -1;
         System.out.println("Actions: 0 (exit) 1 (add racer) 2 (delete racer) 3 (list of racers)");
         System.out.println("Actions: 4 (add comp) 5 (delete comp) 6 (list of comps)");
-        System.out.println("Actions: 7 (add result) 8 (delete result) 9 (list of registred) 10 (results)");
+        System.out.println("Actions: 7 (add result) 8 (delete result) 9 (list of registred) 10 (order result)");
         this.spaceAndAction();
         myint = this.readInt();
         switch (myint) {
@@ -263,7 +270,7 @@ public class Client {
             case 8 -> this.deleteResult();
             case 9 -> this.printRawResult();
             case 10 -> this.printOrderResult();
-            default -> System.out.println("Nevalidní akce");
+            default -> System.out.println("invalid action");
 
         }
         return myint;

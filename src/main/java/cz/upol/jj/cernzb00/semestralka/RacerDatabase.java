@@ -13,10 +13,10 @@ public class RacerDatabase extends BaseDatabase<Racer> implements DatabaseInterf
     public boolean addRacer (String firstname, String lastName, int born)  {
         try {
             Racer racer = new Racer(firstname, lastName, born, this.getNextId());
-            if (this.racerExist(racer)) {
-                System.out.println("Zavodnik jiz existuje, vyberte nový prosim");
+            if (this.rowExist(racer)) {
+                System.out.println("Racer already exist!");
             } else {
-                return writeRacer(racer, true);
+                return this.writeOneInstance(racer, true);
             }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -26,39 +26,10 @@ public class RacerDatabase extends BaseDatabase<Racer> implements DatabaseInterf
 
     }
 
-    private boolean racerExist(Racer newRacer) {
-        return this.readDbData().stream().anyMatch(racer -> racer.equals(newRacer));
-    }
-
-    private boolean writeRacer(Racer racer, boolean append) {
-        try(FileOutputStream f = new FileOutputStream(this.filename, append)) {
-            f.write(racer.getStrToDb().getBytes());
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean writeRacer(ArrayList<Racer> racers, boolean append) {
-        try(FileOutputStream f = new FileOutputStream(this.filename, append)) {
-            for (Racer u : racers) {
-                f.write(u.getStrToDb().getBytes());
-            }
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    public void printAllRacers() {
-        ArrayList<Racer> racers = this.readDbData();
-        racers.forEach(racer-> System.out.print(racer.getToStr() + "\n"));
-    }
-
     public Racer getFromDb(String dbline) {
         String[] parts = dbline.split(";");
         if (parts.length != 4) {
-            throw new IllegalArgumentException("Neplatný záznam Db {dbline}");
+            throw new IllegalArgumentException("invalid db line: " + dbline);
         }
 
         return new Racer(this.getDbValue(parts[1]), this.getDbValue(parts[2]), Integer.parseInt(this.getDbValue(parts[3])), Integer.parseInt(this.getDbValue(parts[0])));
@@ -67,7 +38,7 @@ public class RacerDatabase extends BaseDatabase<Racer> implements DatabaseInterf
     public boolean delete(int id) {
         ArrayList<Racer> racers  = this.readDbData();
         if (!racers.removeIf(racer -> racer.getId() == id)) {
-          throw new IllegalArgumentException("Zadané id neexistuje. id:" + id);
+          throw new IllegalArgumentException("Invalid id. id:" + id);
         }
 
         //odestraneni zavodnika z vysledku
@@ -77,12 +48,9 @@ public class RacerDatabase extends BaseDatabase<Racer> implements DatabaseInterf
                         a -> this.getResultDb().delete(a.getId())
                 );
 
-
-        return this.writeRacer(racers, false);
+        return this.writeMultipleInstance(racers, false);
 
     }
 
-    public Optional<Racer> getById(int idRacer) {
-        return this.readDbData().stream().filter(racer -> racer.getId() == idRacer).findAny();
-    }
+
 }

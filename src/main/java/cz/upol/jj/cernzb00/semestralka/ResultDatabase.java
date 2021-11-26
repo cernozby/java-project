@@ -12,10 +12,10 @@ public class ResultDatabase extends BaseDatabase <Result> implements DatabaseInt
     public boolean addResult (Comp comp, Racer racer, ArrayList<Type> result)  {
         try {
             Result newResult = new Result(this.getNextId(), comp, racer, result);
-            if (this.resultExist(newResult)) {
-                System.out.println("Zaznam jiz existuje!");
+            if (this.rowExist(newResult)) {
+                System.out.println("Result already exist!");
             } else {
-                return writeResult(newResult, true);
+                return writeOneInstance(newResult, true);
             }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
@@ -25,29 +25,6 @@ public class ResultDatabase extends BaseDatabase <Result> implements DatabaseInt
 
     }
 
-    private boolean writeResult(Result result, boolean append) {
-        try(FileOutputStream f = new FileOutputStream(this.filename, append)) {
-            f.write(result.getStrToDb().getBytes());
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean writeResult(ArrayList<Result> results, boolean append) {
-        try(FileOutputStream f = new FileOutputStream(this.filename, append)) {
-            for (Result r : results) {
-                f.write(r.getStrToDb().getBytes());
-            }
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean resultExist(Result newResult) {
-        return this.readDbData().stream().anyMatch(result -> result.equals(newResult));
-    }
 
     public Result getFromDb(String dbline) {
         String[] parts = dbline.split(";");
@@ -76,26 +53,25 @@ public class ResultDatabase extends BaseDatabase <Result> implements DatabaseInt
     public boolean delete(int id) {
         ArrayList<Result> results  = this.readDbData();
         if (!results.removeIf(result -> result.getId() == id)) {
-            throw new IllegalArgumentException("Zadané id neexistuje. id:" + id);
+            throw new IllegalArgumentException("Invalid id. id:" + id);
         }
-
-        return this.writeResult(results, false);
-
+        return this.writeMultipleInstance(results, false);
     }
 
-   public Optional<Result> getById(int id) {
-        return this.readDbData().stream().filter(result-> result.getId() == id).findAny();
-    }
 
     public void printRawResult(int compId) {
         ArrayList<Result> results = this.readDbData();
-        results.forEach(result-> System.out.print(result.getToStr()));
+        results.stream().filter(c -> c.getComp().getId() == compId ).
+                collect(Collectors.toList()).
+                forEach(result-> System.out.print(result.getToStr()));
+        System.out.println("-------------------------------------------------\n");
     }
 
     public void printOrderResult(int compId) {
-        ArrayList<Result> results = this.readDbData();
-        results.sort(Result::compareTo);
-        results.forEach(result-> System.out.println(result.getToStr()));
+        this.readDbData().stream()
+                .filter(c -> c.getComp().getId() == compId)
+                .sorted(Result::compareTo).collect(Collectors.toList()).
+                forEach(result-> System.out.println(result.getToStr()));
         System.out.println("-------------------------------------------------\n");
     };
 }

@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class BaseDatabase <T extends BaseEntity>{
+public class BaseDatabase <T extends BaseEntity & entityInterface >{
 
     protected String filename;
     private Supplier<T> supplier;
@@ -15,21 +15,25 @@ public class BaseDatabase <T extends BaseEntity>{
         this.filename = filename;
     }
 
+    public boolean rowExist(T newInstance) {
+        return this.readDbData().stream().anyMatch(r -> r.equals(newInstance));
+    }
+
     protected String getDbValue(String rawDb) {
         return rawDb.substring(rawDb.indexOf("{") + 1, rawDb.indexOf("}"));
     }
 
     protected RacerDatabase getRacerDb() {
         return new RacerDatabase(this.getRawFilename() + "racer.txt");
-    };
+    }
 
     protected CompDatabase getCompDb() {
         return new CompDatabase(this.getRawFilename() + "comp.txt");
-    };
+    }
 
     protected ResultDatabase getResultDb() {
         return new ResultDatabase(this.getRawFilename() + "result.txt");
-    };
+    }
 
     private String getRawFilename() {
         return this.filename.substring(0, this.filename.indexOf("-")+1);
@@ -58,7 +62,36 @@ public class BaseDatabase <T extends BaseEntity>{
         return result;
     }
 
+    protected boolean writeOneInstance(T instance, boolean append) {
+        try(FileOutputStream f = new FileOutputStream(this.filename, append)) {
+            f.write(instance.getStrToDb().getBytes());
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean writeMultipleInstance(ArrayList<T> instances, boolean append) {
+        try(FileOutputStream f = new FileOutputStream(this.filename, append)) {
+            for (T i : instances) {
+                f.write(i.getStrToDb().getBytes());
+            }
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
     public T getFromDb(String DbLine) {
         return null;
+    }
+
+    public Optional<T> getById(int id) {
+        return this.readDbData().stream().filter(instance -> instance.getId() == id).findAny();
+    }
+
+    public void printAllDb() {
+        ArrayList<T> instances = this.readDbData();
+        instances.forEach(instance-> System.out.print(instance.getToStr() + "\n"));
     }
 }
