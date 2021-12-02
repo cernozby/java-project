@@ -239,10 +239,10 @@ public class Client {
         this.spaceAndAction();
         myint = this.readInt();
 
-        if (myint == 1) {
-            this.connectToDb();
-        } else {
-            System.out.println("Invalid action");
+        switch (myint) {
+            case 0 -> {}
+            case 1 -> this.connectToDb();
+            default -> System.out.println("Invalid action");
         }
         return myint;
 
@@ -257,6 +257,7 @@ public class Client {
         this.spaceAndAction();
         myint = this.readInt();
         switch (myint) {
+            case 0 -> {}
             case 1 -> this.addRacer();
             case 2 -> this.deleteRacer();
             case 3 -> this.printAllRacers();
