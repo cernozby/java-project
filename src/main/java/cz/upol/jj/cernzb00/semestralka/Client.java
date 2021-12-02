@@ -1,12 +1,9 @@
 package cz.upol.jj.cernzb00.semestralka;
 
-import java.awt.desktop.AboutEvent;
-import java.lang.invoke.StringConcatException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Client {
@@ -36,11 +33,11 @@ public class Client {
         return result;
     }
 
-    private int readBornInput(String nameInput) {
+    private int readBornInput() {
         boolean readInput = true;
         int result = 0;
         while (readInput) {
-            System.out.print(nameInput + ": ");
+            System.out.print("Born: ");
             try {
                 result = this.validBorn();
                 readInput = false;
@@ -112,7 +109,7 @@ public class Client {
     }
 
     private boolean isValidName(String name) {
-        String regex = "^[A-Za-z]\\w{5,29}$";
+        String regex = "^[A-Za-z]\\w{2,29}$";
         Pattern p = Pattern.compile(regex);
         return p.matcher(name).matches();
     }
@@ -143,7 +140,7 @@ public class Client {
 
         String firstname = this.readStringInput("Racer firstname");
         String lastname = this.readStringInput("Racer lastname");
-        int born = this.readBornInput("Born");
+        int born = this.readBornInput();
         System.out.println();
         this.racerDatabase.addRacer(firstname, lastname, born);
     }

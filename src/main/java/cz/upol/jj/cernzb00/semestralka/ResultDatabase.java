@@ -61,17 +61,26 @@ public class ResultDatabase extends BaseDatabase <Result> implements DatabaseInt
 
     public void printRawResult(int compId) {
         ArrayList<Result> results = this.readDbData();
-        results.stream().filter(c -> c.getComp().getId() == compId ).
-                collect(Collectors.toList()).
-                forEach(result-> System.out.print(result.getToStr()));
-        System.out.println("-------------------------------------------------\n");
+        List<Result> listResult = results.stream().filter(c -> c.getComp().getId() == compId ).
+                collect(Collectors.toList());
+        if (listResult.isEmpty()) {
+            System.out.println("Empty database.");
+        } else {
+            listResult.forEach(result -> System.out.print(result.getToStr()));
+            System.out.println("-------------------------------------------------\n");
+        }
     }
 
     public void printOrderResult(int compId) {
-        this.readDbData().stream()
+        List<Result> listResult = this.readDbData().stream()
                 .filter(c -> c.getComp().getId() == compId)
-                .sorted(Result::compareTo).collect(Collectors.toList()).
-                forEach(result-> System.out.println(result.getToStr()));
-        System.out.println("-------------------------------------------------\n");
+                .sorted(Result::compareTo).collect(Collectors.toList());
+
+        if (listResult.isEmpty()) {
+            System.out.println("Empty database.");
+        } else {
+            listResult.forEach(result-> System.out.println(result.getToStr()));
+            System.out.println("-------------------------------------------------\n");
+        }
     };
 }

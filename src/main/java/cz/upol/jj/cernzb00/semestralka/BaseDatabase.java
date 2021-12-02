@@ -92,6 +92,10 @@ public class BaseDatabase <T extends BaseEntity & entityInterface >{
 
     public void printAllDb() {
         ArrayList<T> instances = this.readDbData();
-        instances.forEach(instance-> System.out.print(instance.getToStr() + "\n"));
+        if (instances.isEmpty()) {
+                System.out.println("Empty database.");
+        } else {
+            instances.forEach(instance -> System.out.print(instance.getToStr() + "\n"));
+        }
     }
 }
