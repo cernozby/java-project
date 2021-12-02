@@ -1,4 +1,4 @@
-#KMI/JJ1 Semestrální práce cernozby 2021/2022
+#KMI/JJ1 Semestrální práce cernzb00 2021/2022
 
 Semestralní práce zpracovává výsledky z lezeckých závodu. Obsahuje 3 tabulky, a to
 tabulku závodníků, závodů, a výsledků. Vazba mezi závodníky a závody je N:M. 
